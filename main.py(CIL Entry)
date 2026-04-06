@@ -1,0 +1,33 @@
+import argparse
+from logger_config import setup_logger
+from backup_service import run_backup
+from compression_service import compress_backup
+from rotation_service import rotation_backups
+
+def main():
+  
+    setup_logger()
+    parser = argparse.ArgumentParser(description="Folder backup tool")
+    parser.add_argument("source", required=True, help="source directory")
+    parser.add_argument("destination", required=True, help="backup directory")
+    parser.add_argument("dry-run", action=store_true, help="simulate backup")
+    parser.add_argument("compress", action=store_true, help="compres backup")
+    parser.add_argument("rotate", action=store_true, help="Rotate old backups")
+
+    args = parser.parse_args()
+
+    backup_path = run_backup(
+        args.source,
+        args.destination
+        args.dry_run
+    )
+
+    if args.compress and  not args.dry_run:
+    compress_backup(backup_path)
+
+    if args.rotate:
+      rotate_backups(args.destination)
+
+if __name__ =="__main__":
+    main()
+    

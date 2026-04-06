@@ -1,8 +1,9 @@
 import logging
+from config import LOG_FLIE
 
-def setup_logger():
+def setup_logging():
     logging.basicConfig(
-        filename="email_log.log",
+        filename=LOG_FLIE,
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
