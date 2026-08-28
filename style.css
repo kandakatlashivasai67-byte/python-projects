@@ -1,0 +1,794 @@
+/* =========================================================================
+   Student Feedback Ledger — design tokens
+   Theme: a school gradebook / record ledger, re-imagined as software.
+   Ink navy sidebar, ruled paper canvas, a rotated grade-stamp signature.
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Color */
+  --ink:        #16233F;   /* deep navy — sidebar, headings */
+  --ink-soft:   #2C3B5C;   /* lighter navy for hover states */
+  --paper:      #ECEAE2;   /* warm grey-paper canvas, not cream */
+  --paper-card: #F7F5EF;   /* card surface, slightly lighter than canvas */
+  --rule:       #D8D3C4;   /* faint ledger rule lines */
+  --margin-red: #B8483F;   /* notebook margin line / alerts */
+  --amber:      #E0A030;   /* accent — stamps, stars, bars */
+  --amber-deep: #B97D1E;
+  --moss:       #5C7A5C;   /* success / positive */
+  --ink-70:     rgba(22, 35, 63, 0.7);
+  --ink-45:     rgba(22, 35, 63, 0.45);
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Layout */
+  --sidebar-w: 240px;
+  --radius: 3px;
+  --shadow-card: 0 1px 2px rgba(22, 35, 63, 0.06), 0 4px 14px rgba(22, 35, 63, 0.07);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+::selection { background: var(--amber); color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--amber-deep);
+  outline-offset: 2px;
+}
+
+/* =========================================================================
+   Ruled-paper texture — a repeating faint horizontal rule, like notebook
+   paper, applied to the main canvas behind content.
+   ========================================================================= */
+.ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 35px,
+    var(--rule) 36px
+  );
+}
+
+/* =========================================================================
+   Top bar (public pages)
+   ========================================================================= */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: var(--ink);
+  color: var(--paper-card);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  color: var(--paper-card);
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--amber);
+  border-radius: 50%;
+  color: var(--amber);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  transform: rotate(-8deg);
+}
+
+.topbar nav {
+  display: flex;
+  gap: 28px;
+  font-size: 0.92rem;
+}
+
+.topbar nav a {
+  text-decoration: none;
+  color: var(--paper-card);
+  opacity: 0.82;
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.topbar nav a:hover { opacity: 1; border-color: var(--amber); }
+
+/* =========================================================================
+   Hero (home page)
+   ========================================================================= */
+.hero {
+  padding: 88px 40px 72px;
+  max-width: 920px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--margin-red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.hero-eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: var(--margin-red);
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  line-height: 1.05;
+  font-weight: 600;
+  margin: 0 0 22px;
+  max-width: 14ch;
+}
+
+.hero p.lede {
+  font-size: 1.12rem;
+  color: var(--ink-70);
+  max-width: 52ch;
+  line-height: 1.6;
+  margin: 0 0 36px;
+}
+
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 24px;
+  border-radius: var(--radius);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper-card);
+}
+.btn-primary:hover { background: var(--ink-soft); box-shadow: var(--shadow-card); }
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.btn-outline:hover { background: var(--ink); color: var(--paper-card); }
+
+.btn-danger {
+  background: transparent;
+  border-color: var(--margin-red);
+  color: var(--margin-red);
+}
+.btn-danger:hover { background: var(--margin-red); color: var(--paper-card); }
+
+.btn-sm { padding: 8px 14px; font-size: 0.82rem; }
+
+/* Stat strip on home */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  max-width: 920px;
+  margin: 0 auto 90px;
+}
+.stat-cell {
+  background: var(--paper-card);
+  padding: 26px 32px;
+}
+.stat-cell .num {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.stat-cell .label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-45);
+  margin-top: 4px;
+}
+
+/* How it works / cards row */
+.section {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 40px 100px;
+}
+.section h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.section .section-sub {
+  color: var(--ink-70);
+  margin-bottom: 36px;
+  max-width: 60ch;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.info-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--amber);
+  padding: 24px 22px;
+  border-radius: var(--radius);
+}
+.info-card .idx {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--margin-red);
+  margin-bottom: 10px;
+}
+.info-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+.info-card p { color: var(--ink-70); font-size: 0.92rem; line-height: 1.55; margin: 0; }
+
+/* =========================================================================
+   Ledger card wrapper — used for forms and login: paper card with a
+   red margin rule down the left, like notebook paper.
+   ========================================================================= */
+.ledger-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  padding: 40px 40px 40px 56px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.ledger-card::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 34px;
+  width: 1px;
+  background: var(--margin-red);
+  opacity: 0.55;
+}
+
+.page-wrap {
+  min-height: calc(100vh - 74px);
+  padding: 56px 24px 90px;
+}
+
+.page-wrap h1.form-title {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.page-wrap p.form-sub {
+  text-align: center;
+  color: var(--ink-70);
+  margin-bottom: 40px;
+}
+
+/* Form elements */
+.field { margin-bottom: 22px; }
+.field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: var(--ink);
+}
+.field .hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-45);
+  margin-top: 5px;
+}
+
+.field input[type="text"],
+.field input[type="password"],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--amber-deep);
+  box-shadow: 0 0 0 3px rgba(224, 160, 48, 0.18);
+}
+.field textarea { resize: vertical; min-height: 100px; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+/* Star rating widget */
+.star-rating {
+  display: inline-flex;
+  flex-direction: row-reverse;  /* DOM is 5..1, this renders it visually 1..5 */
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: 1.9rem;
+  line-height: 1;
+}
+.star-rating input { position: absolute; opacity: 0; pointer-events: none; }
+.star-rating label {
+  cursor: pointer;
+  color: var(--rule);
+  transition: color 0.12s ease, transform 0.1s ease;
+  margin: 0;
+}
+.star-rating label:hover { transform: scale(1.08); }
+
+/* Pure-CSS fill: checked star + everything before it in DOM (= to its
+   left on screen, since the row is reversed) turns amber. Hover previews
+   the same fill before a value is chosen. */
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: var(--amber);
+}
+.star-rating .rating-caption {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-45);
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Character counter */
+.char-counter {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-45);
+  margin-top: 4px;
+}
+.char-counter.near-limit { color: var(--margin-red); }
+
+/* Flash messages */
+.flash-stack { max-width: 640px; margin: 0 auto 20px; }
+.flash {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+  border-left: 3px solid;
+}
+.flash-error { background: #FBEAE7; border-color: var(--margin-red); color: #7A2E27; }
+.flash-success { background: #EBF1EA; border-color: var(--moss); color: #35492F; }
+
+/* =========================================================================
+   Thank-you page
+   ========================================================================= */
+.thankyou-stamp {
+  width: 128px;
+  height: 128px;
+  margin: 0 auto 28px;
+  border: 3px solid var(--moss);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-6deg);
+  color: var(--moss);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.3;
+  animation: stamp-in 0.4s cubic-bezier(.2,1.4,.4,1) both;
+}
+@keyframes stamp-in {
+  0% { opacity: 0; transform: rotate(-6deg) scale(1.6); }
+  100% { opacity: 1; transform: rotate(-6deg) scale(1); }
+}
+
+/* =========================================================================
+   ADMIN — sidebar shell
+   ========================================================================= */
+.admin-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--ink);
+  color: var(--paper-card);
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .brand { margin-bottom: 40px; }
+.sidebar-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(247, 245, 239, 0.4);
+  margin: 22px 0 10px;
+}
+.sidebar-link {
+  display: block;
+  padding: 9px 10px;
+  border-radius: var(--radius);
+  color: rgba(247, 245, 239, 0.82);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+}
+.sidebar-link:hover { background: var(--ink-soft); color: #fff; }
+.sidebar-spacer { flex: 1; }
+.sidebar-foot {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(247, 245, 239, 0.45);
+  border-top: 1px solid rgba(247, 245, 239, 0.15);
+  padding-top: 16px;
+}
+
+.admin-main { flex: 1; padding: 40px 44px 80px; min-width: 0; }
+
+.admin-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.admin-header h1 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  margin: 0;
+}
+.admin-header .sub { color: var(--ink-70); font-size: 0.9rem; }
+
+/* Stat cards row on dashboard */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 34px;
+}
+.dash-stat {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.dash-stat .num {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+}
+.dash-stat .label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-45);
+  margin-top: 2px;
+}
+
+/* Rating distribution bar chart (CSS bars, animated) */
+.chart-block {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 24px 26px;
+  margin-bottom: 34px;
+}
+.chart-block h2 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 0 0 18px;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 40px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+.bar-track {
+  height: 12px;
+  background: var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--amber-deep), var(--amber));
+  border-radius: 6px;
+  transition: width 0.9s cubic-bezier(.2,.9,.3,1);
+}
+
+.teacher-avg-row {
+  display: grid;
+  grid-template-columns: 1fr 60px;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--rule);
+  font-size: 0.88rem;
+}
+.teacher-avg-row:last-child { border-bottom: none; }
+.teacher-avg-row .avg-badge {
+  font-family: var(--font-mono);
+  text-align: right;
+  color: var(--amber-deep);
+  font-weight: 600;
+}
+
+/* Toolbar: search + filter */
+.toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  align-items: center;
+}
+.toolbar input[type="search"],
+.toolbar select {
+  padding: 10px 13px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  background: #fff;
+}
+.toolbar input[type="search"] { flex: 1; min-width: 200px; }
+.result-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-45);
+}
+
+/* Ledger table */
+.ledger-table-wrap {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+table.ledger-table { width: 100%; border-collapse: collapse; }
+.ledger-table thead th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-45);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: rgba(216, 211, 196, 0.25);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.ledger-table thead th:hover { color: var(--ink); }
+.ledger-table thead th .arrow { opacity: 0.4; font-size: 0.7em; margin-left: 3px; }
+
+.ledger-table tbody tr { border-bottom: 1px solid var(--rule); transition: background 0.15s ease; }
+.ledger-table tbody tr:last-child { border-bottom: none; }
+.ledger-table tbody tr:hover { background: rgba(224, 160, 48, 0.07); }
+.ledger-table td { padding: 13px 16px; font-size: 0.87rem; vertical-align: top; }
+
+.td-roll { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-70); }
+.td-comment { max-width: 320px; color: var(--ink-70); }
+.td-date { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-45); white-space: nowrap; }
+
+/* Rating stamp badge inside table */
+.rating-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--amber);
+  color: var(--amber-deep);
+}
+.rating-stamp.low { border-color: var(--margin-red); color: var(--margin-red); }
+.rating-stamp.mid { border-color: var(--ink-45); color: var(--ink-70); }
+
+.row-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-45);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+/* Add-teacher inline panel */
+.teacher-panel {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin-bottom: 34px;
+}
+.teacher-panel summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.teacher-panel summary::-webkit-details-marker { display: none; }
+.teacher-panel summary::after {
+  content: "+";
+  font-size: 1.3rem;
+  color: var(--amber-deep);
+  transition: transform 0.15s ease;
+}
+.teacher-panel[open] summary::after { transform: rotate(45deg); }
+.teacher-form {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 1.4fr auto;
+  gap: 12px;
+  margin-top: 18px;
+}
+@media (max-width: 720px) { .teacher-form { grid-template-columns: 1fr; } }
+.teacher-form input {
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+}
+
+/* Toast */
+.toast-stack {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 60;
+}
+.toast {
+  background: var(--ink);
+  color: var(--paper-card);
+  padding: 13px 18px;
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+  animation: toast-in 0.25s ease both;
+  border-left: 3px solid var(--amber);
+}
+.toast.toast-error { border-left-color: var(--margin-red); }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.toast.leaving { animation: toast-out 0.2s ease forwards; }
+@keyframes toast-out {
+  to { opacity: 0; transform: translateX(12px); }
+}
+
+/* Confirm modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(22, 35, 63, 0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 70;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal-box {
+  background: var(--paper-card);
+  border-radius: var(--radius);
+  padding: 28px 28px 22px;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(22,35,63,0.25);
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.18s ease;
+}
+.modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+.modal-box h3 { font-family: var(--font-display); margin: 0 0 10px; }
+.modal-box p { color: var(--ink-70); font-size: 0.9rem; margin: 0 0 22px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Responsive: collapse admin sidebar to a top bar on small screens */
+@media (max-width: 860px) {
+  .admin-shell { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 16px 20px; }
+  .sidebar .brand { margin-bottom: 0; }
+  .sidebar-section-label, .sidebar-foot { display: none; }
+  .sidebar nav { display: flex; gap: 4px; }
+  .sidebar-spacer { display: none; }
+  .admin-main { padding: 28px 20px 60px; }
+  .field-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .topbar { padding: 16px 20px; }
+  .topbar nav { gap: 16px; }
+  .hero { padding: 56px 20px 48px; }
+  .stat-strip { grid-template-columns: 1fr; }
+  .section { padding: 0 20px 70px; }
+  .ledger-card { padding: 30px 22px 30px 40px; }
+  .ledger-table-wrap { overflow-x: auto; }
+}

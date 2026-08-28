@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Feedback Ledger — Home{% endblock %}
+{% block content %}
+<header class="topbar">
+  <a href="{{ url_for('home') }}" class="brand">
+    <span class="brand-mark">FL</span> Feedback Ledger
+  </a>
+  <nav>
+    <a href="{{ url_for('submit_feedback') }}">Give feedback</a>
+    <a href="{{ url_for('admin_login') }}">Admin</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">Term II · Feedback collection open</div>
+  <h1>A record of every lecture, kept honestly.</h1>
+  <p class="lede">
+    Rate your courses and teachers in under a minute. Every entry is logged
+    like a page in a ledger — reviewed by the department, never lost in an inbox.
+  </p>
+  <div class="hero-actions">
+    <a href="{{ url_for('submit_feedback') }}" class="btn btn-primary">Give feedback →</a>
+    <a href="{{ url_for('admin_login') }}" class="btn btn-outline">Admin dashboard</a>
+  </div>
+</section>
+
+<div class="stat-strip">
+  <div class="stat-cell">
+    <div class="num">{{ total }}</div>
+    <div class="label">Entries logged</div>
+  </div>
+  <div class="stat-cell">
+    <div class="num">{{ avg_rating }}<span style="font-size:1.1rem;">/5</span></div>
+    <div class="label">Average rating</div>
+  </div>
+  <div class="stat-cell">
+    <div class="num">{{ teacher_count }}</div>
+    <div class="label">Teachers on record</div>
+  </div>
+</div>
+
+<section class="section">
+  <h2>How the ledger works</h2>
+  <p class="section-sub">Three short steps — no login required to submit feedback.</p>
+  <div class="card-row">
+    <div class="info-card">
+      <div class="idx">01 · Identify</div>
+      <h3>Enter your details</h3>
+      <p>Your name and roll number, so the entry is attributable — feedback is reviewed by department staff, not shared publicly.</p>
+    </div>
+    <div class="info-card">
+      <div class="idx">02 · Rate</div>
+      <h3>Stamp a rating</h3>
+      <p>Pick the teacher and course, then stamp a rating from one to five stars.</p>
+    </div>
+    <div class="info-card">
+      <div class="idx">03 · Comment</div>
+      <h3>Add context</h3>
+      <p>A short note on what worked and what didn't — this is the part departments read closest.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

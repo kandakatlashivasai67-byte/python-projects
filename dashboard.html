@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Feedback Ledger{% endblock %}
+{% block content %}
+<div class="admin-shell">
+  <aside class="sidebar">
+    <a href="{{ url_for('home') }}" class="brand">
+      <span class="brand-mark">FL</span> Feedback Ledger
+    </a>
+    <nav>
+      <a class="sidebar-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a class="sidebar-link" href="{{ url_for('home') }}">View public site</a>
+    </nav>
+    <div class="sidebar-section-label">Session</div>
+    <a class="sidebar-link" href="{{ url_for('admin_logout') }}">Sign out</a>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-foot">Signed in as admin</div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-header">
+      <div>
+        <h1>The ledger</h1>
+        <div class="sub">{{ total }} entries on record · {{ avg_rating }} average rating</div>
+      </div>
+    </div>
+
+    <div class="flash-stack" style="max-width:none; margin-bottom:24px;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="num">{{ total }}</div>
+        <div class="label">Total entries</div>
+      </div>
+      <div class="dash-stat">
+        <div class="num">{{ avg_rating }}</div>
+        <div class="label">Average rating</div>
+      </div>
+      <div class="dash-stat">
+        <div class="num">{{ teachers|length }}</div>
+        <div class="label">Teachers tracked</div>
+      </div>
+      <div class="dash-stat">
+        <div class="num">{{ distribution[5] + distribution[4] }}</div>
+        <div class="label">4★ &amp; 5★ entries</div>
+      </div>
+    </div>
+
+    <div class="chart-block">
+      <h2>Rating distribution</h2>
+      {% for n in [5,4,3,2,1] %}
+        {% set pct = (distribution[n] / total * 100) if total else 0 %}
+        <div class="bar-row">
+          <span>{{ n }} star{{ 's' if n != 1 else '' }}</span>
+          <span class="bar-track"><span class="bar-fill" data-pct="{{ pct }}"></span></span>
+          <span>{{ distribution[n] }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="chart-block">
+      <h2>Average rating by teacher</h2>
+      {% for t in teacher_averages %}
+        <div class="teacher-avg-row">
+          <span>{{ t.name }} <span style="color:var(--ink-45); font-family:var(--font-mono); font-size:0.78rem;">({{ t.count }} entries)</span></span>
+          <span class="avg-badge">{{ t.avg }}</span>
+        </div>
+      {% else %}
+        <p class="hint">No feedback logged yet.</p>
+      {% endfor %}
+    </div>
+
+    <details class="teacher-panel">
+      <summary>Add a teacher to the roster</summary>
+      <form class="teacher-form" method="POST" action="{{ url_for('add_teacher') }}">
+        <input type="text" name="name" placeholder="Full name" required>
+        <input type="text" name="department" placeholder="Department" required>
+        <input type="text" name="subject" placeholder="Subject" required>
+        <button type="submit" class="btn btn-primary btn-sm">Add</button>
+      </form>
+    </details>
+
+    <div class="toolbar">
+      <input type="search" id="searchInput" placeholder="Search by student, teacher, roll no., or comment…">
+      <select id="teacherFilter">
+        <option value="">All teachers</option>
+        {% for t in teachers %}
+          <option value="{{ t.name }}">{{ t.name }}</option>
+        {% endfor %}
+      </select>
+      <select id="ratingFilter">
+        <option value="">Any rating</option>
+        {% for n in [5,4,3,2,1] %}
+          <option value="{{ n }}">{{ n }} star{{ 's' if n != 1 else '' }}</option>
+        {% endfor %}
+      </select>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+
+    <div class="ledger-table-wrap">
+      <table class="ledger-table" id="ledgerTable">
+        <thead>
+          <tr>
+            <th data-sort="date">Date <span class="arrow">↕</span></th>
+            <th data-sort="student">Student</th>
+            <th data-sort="teacher">Teacher</th>
+            <th data-sort="course">Course</th>
+            <th data-sort="rating">Rating <span class="arrow">↕</span></th>
+            <th>Comments</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody">
+          {% for r in rows %}
+          <tr data-id="{{ r.id }}"
+              data-student="{{ r.student_name|lower }}"
+              data-roll="{{ r.roll_no|lower }}"
+              data-teacher="{{ r.teacher_name }}"
+              data-course="{{ r.course|lower }}"
+              data-comment="{{ (r.comments or '')|lower }}"
+              data-rating="{{ r.rating }}"
+              data-date="{{ r.created_at }}">
+            <td class="td-date">{{ r.created_at[:10] }}</td>
+            <td>{{ r.student_name }}<br><span class="td-roll">{{ r.roll_no }}</span></td>
+            <td>{{ r.teacher_name }}<br><span class="td-roll">{{ r.department }}</span></td>
+            <td>{{ r.course }}</td>
+            <td>
+              <span class="rating-stamp {{ 'low' if r.rating <= 2 else ('mid' if r.rating == 3 else '') }}">
+                ★ {{ r.rating }}
+              </span>
+            </td>
+            <td class="td-comment">{{ r.comments or '—' }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" data-delete="{{ r.id }}">Delete</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="row-empty" id="emptyState" style="display:none;">No entries match your filters.</div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <h3>Delete this entry?</h3>
+    <p>This removes the feedback entry permanently from the ledger.</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" id="cancelDelete">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="confirmDelete">Delete entry</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    initBarAnimation();
+    initDashboardTable();
+  });
+</script>
+{% endblock %}
